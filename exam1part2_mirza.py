@@ -3,12 +3,22 @@ import numpy as np
 import matplotlib.pyplot as plt
 import streamlit as st
 
-# Load the dataset from the given URL
-filename = "https://raw.githubusercontent.com/klamsal/Fall2024Exam/main/car_dataset.csv"
-df = pd.read_csv(filename)
-
-# Streamlit Title
 st.title("Part 2: Car Dataset - Data Cleaning and Analysis")
+
+# File upload
+uploaded_file = st.file_uploader("Upload your car dataset CSV", type=["csv"])
+
+if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+else:
+    # If no upload, try loading from URL
+    try:
+        filename = "https://raw.githubusercontent.com/klamsal/Fall2024Exam/main/car_dataset.csv"
+        df = pd.read_csv(filename)
+        st.success("Loaded dataset from URL.")
+    except Exception as e:
+        st.error("Error loading dataset from URL. Please upload the file manually.")
+        st.stop()
 
 # Display raw data
 st.subheader("Raw Data")
@@ -18,7 +28,6 @@ st.write(df.head())
 df.replace("?", np.nan, inplace=True)
 
 # Step 2: Handling Missing Values
-# Convert columns with numeric data to float first
 df["horsepower"] = df["horsepower"].astype(float)
 df["engine-size"] = df["engine-size"].astype(float)
 
@@ -39,15 +48,12 @@ st.subheader("Cleaned Data")
 st.write(df.head())
 
 # Step 3: Unit Transformation
-# Convert city-mpg to city-L/100km
 df["city-mpg"] = df["city-mpg"].astype(float)
 df["city-L/100km"] = 235 / df["city-mpg"]
 
-# Convert highway-mpg to highway-L/100km
 df["highway-mpg"] = df["highway-mpg"].astype(float)
 df["highway-L/100km"] = 235 / df["highway-mpg"]
 
-# Drop old mpg columns
 df.drop(["city-mpg", "highway-mpg"], axis=1, inplace=True)
 
 # Step 4: Normalization
@@ -85,4 +91,5 @@ ax2.set_xlabel("Normalized Length")
 ax2.set_ylabel("Normalized Width")
 ax2.set_title("Normalized Car Dimensions")
 st.pyplot(fig2)
+
 
