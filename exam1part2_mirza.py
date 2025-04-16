@@ -8,14 +8,17 @@ st.title("Part 2: Car Dataset - Data Cleaning and Analysis")
 # File upload
 uploaded_file = st.file_uploader("Upload your car dataset CSV", type=["csv"])
 
+# Correct GitHub raw file link
+default_url = "https://raw.githubusercontent.com/klamsal/Fall2024Exam/main/CleanedAutomobile.csv"
+
+# Load the dataset
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
+    st.success("Dataset loaded from uploaded file.")
 else:
-    # If no upload, try loading from URL
     try:
-        filename = "https://raw.githubusercontent.com/klamsal/Fall2024Exam/main/car_dataset.csv"
-        df = pd.read_csv(filename)
-        st.success("Loaded dataset from URL.")
+        df = pd.read_csv(default_url)
+        st.success("Dataset loaded from default URL.")
     except Exception as e:
         st.error("Error loading dataset from URL. Please upload the file manually.")
         st.stop()
